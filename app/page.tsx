@@ -71,11 +71,32 @@ function safeParseResult(result: any): any {
   return result
 }
 
+const AUTH_THEME = {
+  '--background': '30 20% 96%',
+  '--foreground': '30 10% 12%',
+  '--card': '0 0% 100%',
+  '--card-foreground': '30 10% 12%',
+  '--primary': '40 50% 45%',
+  '--primary-foreground': '0 0% 100%',
+  '--secondary': '30 10% 90%',
+  '--secondary-foreground': '30 10% 12%',
+  '--muted': '30 10% 92%',
+  '--muted-foreground': '30 8% 45%',
+  '--accent': '40 50% 45%',
+  '--accent-foreground': '0 0% 100%',
+  '--destructive': '0 50% 50%',
+  '--destructive-foreground': '0 0% 100%',
+  '--border': '30 10% 82%',
+  '--input': '30 10% 82%',
+  '--ring': '40 50% 45%',
+  '--radius': '0.375rem',
+} as React.CSSProperties
+
 function AuthScreen() {
   const [mode, setMode] = useState<'login' | 'register'>('register')
   return (
-    <div style={THEME_VARS} className="min-h-screen bg-background flex items-center justify-center font-serif">
-      <div className="w-full max-w-md p-8 border border-border bg-card">
+    <div style={AUTH_THEME} className="min-h-screen bg-background flex items-center justify-center font-serif">
+      <div className="w-full max-w-md p-10 border border-border bg-card rounded-lg shadow-lg">
         <h1 className="text-2xl font-light tracking-widest text-foreground uppercase text-center mb-1">Omnisight</h1>
         <p className="text-xs text-muted-foreground tracking-wider text-center mb-8">Enterprise Intelligence Platform</p>
         {mode === 'login' ? (
