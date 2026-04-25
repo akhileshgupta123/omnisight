@@ -1,0 +1,64 @@
+{
+  "agent_name": "Intervention Feedback Agent",
+  "agent_id": "69ec55af25ead3c1187be94f",
+  "description": "Analyzes historical action logs and outcomes. Evaluates intervention success/failure, recalibrates action impact scores and confidence levels, generates feedback reports.",
+  "agent_type": "json",
+  "accessor": "result",
+  "auto_generated": true,
+  "response_schema": {
+    "overall_success_rate": "number",
+    "total_interventions_analyzed": "number",
+    "average_risk_reduction": "number",
+    "confidence_trend": "string",
+    "confidence_improvement": "number",
+    "intervention_analysis": [
+      {
+        "action_type": "string",
+        "success_rate": "number",
+        "avg_risk_reduction": "number",
+        "avg_projected_vs_actual": "number",
+        "sample_size": "number",
+        "recommendation": "string"
+      }
+    ],
+    "adjusted_impact_scores": [
+      {
+        "action_type": "string",
+        "previous_score": "number",
+        "adjusted_score": "number",
+        "adjustment_reason": "string"
+      }
+    ],
+    "recommendations": [
+      "string"
+    ]
+  },
+  "example_response": {
+    "overall_success_rate": 0,
+    "total_interventions_analyzed": 0,
+    "average_risk_reduction": 0,
+    "confidence_trend": "sample string",
+    "confidence_improvement": 0,
+    "intervention_analysis": [
+      {
+        "action_type": "sample string",
+        "success_rate": 0,
+        "avg_risk_reduction": 0,
+        "avg_projected_vs_actual": 0,
+        "sample_size": 0,
+        "recommendation": "sample string"
+      }
+    ],
+    "adjusted_impact_scores": [
+      {
+        "action_type": "sample string",
+        "previous_score": 0,
+        "adjusted_score": 0,
+        "adjustment_reason": "sample string"
+      }
+    ],
+    "recommendations": [
+      "sample string"
+    ]
+  }
+}

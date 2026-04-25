@@ -1,0 +1,220 @@
+{
+  "agent_name": "Executive Orchestrator Agent",
+  "agent_id": "69ec559edcdea9592ddcd911",
+  "description": "Coordinates all sub-agents, synthesizes outputs into unified intelligence -- risk scores with confidence/data-coverage metadata, pre-risk alerts, risk trajectories, preventive/reactive actions, three-way simulation comparisons, and root-cause explanations.",
+  "agent_type": "json",
+  "accessor": "result",
+  "auto_generated": true,
+  "response_schema": {
+    "dashboard_metrics": {
+      "overall_risk_score": "number",
+      "overall_risk_confidence": "number",
+      "revenue_at_risk": "number",
+      "revenue_confidence": "number",
+      "churn_probability": "number",
+      "churn_confidence": "number",
+      "workforce_stability": "number",
+      "workforce_confidence": "number",
+      "pre_risk_signal_count": "number",
+      "data_sources": [
+        "string"
+      ]
+    },
+    "at_risk_accounts": [
+      {
+        "account_name": "string",
+        "risk_score": "number",
+        "confidence_pct": "number",
+        "data_sources": [
+          "string"
+        ],
+        "trend_direction": "string",
+        "rate_of_change": "number",
+        "churn_risk": "string",
+        "workforce_risk": "string",
+        "revenue_impact": "number"
+      }
+    ],
+    "pre_risk_alerts": [
+      {
+        "account_name": "string",
+        "signal_type": "string",
+        "severity": "string",
+        "confidence_pct": "number",
+        "data_sources": [
+          "string"
+        ],
+        "message": "string",
+        "trend_direction": "string",
+        "rate_of_change": "number"
+      }
+    ],
+    "financial_forecast": {
+      "best_case_revenue": "number",
+      "expected_revenue": "number",
+      "worst_case_revenue": "number",
+      "confidence_pct": "number",
+      "projections": [
+        {
+          "period": "string",
+          "revenue": "number",
+          "confidence": "number"
+        }
+      ]
+    },
+    "action_plans": [
+      {
+        "action_name": "string",
+        "action_type": "string",
+        "account_name": "string",
+        "impact_score": "number",
+        "confidence_pct": "number",
+        "auto_execution": {
+          "meetings_scheduled": "number",
+          "escalations_triggered": "number",
+          "resources_reassigned": "number",
+          "projected_risk_reduction": "number",
+          "projected_revenue_saved": "number",
+          "execution_status": "string"
+        }
+      }
+    ],
+    "simulation_comparison": {
+      "no_action": {
+        "revenue_impact": "number",
+        "risk_level": "string",
+        "churn_rate": "number"
+      },
+      "recommended": {
+        "revenue_impact": "number",
+        "risk_level": "string",
+        "churn_rate": "number",
+        "cost": "number"
+      },
+      "auto_execution": {
+        "revenue_impact": "number",
+        "risk_level": "string",
+        "churn_rate": "number",
+        "cost": "number",
+        "confidence": "number"
+      }
+    },
+    "executive_summary": {
+      "top_insights": [
+        "string"
+      ],
+      "top_risks": [
+        "string"
+      ],
+      "top_actions": [
+        "string"
+      ]
+    }
+  },
+  "example_response": {
+    "dashboard_metrics": {
+      "overall_risk_score": 0,
+      "overall_risk_confidence": 0,
+      "revenue_at_risk": 0,
+      "revenue_confidence": 0,
+      "churn_probability": 0,
+      "churn_confidence": 0,
+      "workforce_stability": 0,
+      "workforce_confidence": 0,
+      "pre_risk_signal_count": 0,
+      "data_sources": [
+        "sample string"
+      ]
+    },
+    "at_risk_accounts": [
+      {
+        "account_name": "sample string",
+        "risk_score": 0,
+        "confidence_pct": 0,
+        "data_sources": [
+          "sample string"
+        ],
+        "trend_direction": "sample string",
+        "rate_of_change": 0,
+        "churn_risk": "sample string",
+        "workforce_risk": "sample string",
+        "revenue_impact": 0
+      }
+    ],
+    "pre_risk_alerts": [
+      {
+        "account_name": "sample string",
+        "signal_type": "sample string",
+        "severity": "sample string",
+        "confidence_pct": 0,
+        "data_sources": [
+          "sample string"
+        ],
+        "message": "sample string",
+        "trend_direction": "sample string",
+        "rate_of_change": 0
+      }
+    ],
+    "financial_forecast": {
+      "best_case_revenue": 0,
+      "expected_revenue": 0,
+      "worst_case_revenue": 0,
+      "confidence_pct": 0,
+      "projections": [
+        {
+          "period": "sample string",
+          "revenue": 0,
+          "confidence": 0
+        }
+      ]
+    },
+    "action_plans": [
+      {
+        "action_name": "sample string",
+        "action_type": "sample string",
+        "account_name": "sample string",
+        "impact_score": 0,
+        "confidence_pct": 0,
+        "auto_execution": {
+          "meetings_scheduled": 0,
+          "escalations_triggered": 0,
+          "resources_reassigned": 0,
+          "projected_risk_reduction": 0,
+          "projected_revenue_saved": 0,
+          "execution_status": "sample string"
+        }
+      }
+    ],
+    "simulation_comparison": {
+      "no_action": {
+        "revenue_impact": 0,
+        "risk_level": "sample string",
+        "churn_rate": 0
+      },
+      "recommended": {
+        "revenue_impact": 0,
+        "risk_level": "sample string",
+        "churn_rate": 0,
+        "cost": 0
+      },
+      "auto_execution": {
+        "revenue_impact": 0,
+        "risk_level": "sample string",
+        "churn_rate": 0,
+        "cost": 0,
+        "confidence": 0
+      }
+    },
+    "executive_summary": {
+      "top_insights": [
+        "sample string"
+      ],
+      "top_risks": [
+        "sample string"
+      ],
+      "top_actions": [
+        "sample string"
+      ]
+    }
+  }
+}
