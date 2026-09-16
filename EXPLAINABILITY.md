@@ -114,9 +114,22 @@ Confidence scores are derived from:
 
 ## 5. Model and Parameter Transparency
 
-### 5.1 Model Configuration
+### 5.1 Model Inventory
 
-All agents are powered by large language models accessed through the Lyzr platform. Each agent has:
+All agents are powered by large language models accessed through the Lyzr platform. The complete model inventory:
+
+| Agent | Platform ID | Role | Temperature | Validation Cadence |
+|---|---|---|---|---|
+| Executive Orchestrator | `69ec559edcdea9592ddcd911` | Manager | Moderate | Quarterly |
+| Data Harmonization | `69ec55796ff27f88a5adb8ba` | Worker | Low | Quarterly |
+| Client Intelligence | `69ec5579683f81d0be89f2d8` | Worker | Moderate | Quarterly |
+| Workforce Dynamics | `69ec557adcdea9592ddcd90b` | Worker | Moderate | Quarterly |
+| Financial Forecasting | `69ec557a25ead3c1187be946` | Worker | Low | Quarterly |
+| Weak Signal Detection | `69ec557ae78e19fa5bc64d5c` | Worker | Moderate | Quarterly |
+| Action Simulation | `69ec557b0263199051be3424` | Worker | Moderate | Quarterly |
+| Intervention Feedback | `69ec55af25ead3c1187be94f` | Worker (Independent) | Moderate | Quarterly |
+
+Each agent has:
 
 - A **defined role** (manager or worker) constraining its scope of action.
 - A **goal statement** describing what the agent optimizes for.
@@ -135,38 +148,133 @@ Agent instructions follow these principles:
 - **Source-attributing**: Agents must list data sources used for each assessment.
 - **Limitation-aware**: Agents must flag when data is insufficient rather than guessing.
 
-## 6. Tool Usage Disclosure
+## 6. Risk Tier and Compliance Configuration
+
+### 6.1 Risk Tier Declaration
+
+OmniSight is classified at **risk tier: high**.
+
+**Rationale:** The platform provides risk intelligence that directly informs enterprise business decisions including resource allocation, client retention strategy, and financial forecasting. While it does not autonomously execute decisions, its assessments carry significant influence on high-stakes outcomes.
+
+### 6.2 Compliance Controls
+
+| Control | Status | Details |
+|---|---|---|
+| Human-in-the-loop | `always` | All actions require user confirmation; no autonomous execution |
+| Audit logging | Enabled | All agent invocations, inputs, outputs, and timestamps are logged to the database |
+| Kill switch | Available | System can be halted by disabling the Executive Orchestrator agent via the Lyzr platform; all sub-agents cease operation immediately |
+| Immutable logs | Enabled | Audit records in `action_logs`, `risk_scores`, and `executive_summaries` collections are append-only; historical records are never modified |
+| Quarterly validation | Scheduled | Agent behavior, model drift, and output accuracy are reviewed quarterly against baseline metrics |
+
+### 6.3 Compliance Artifacts
+
+- `agent.yaml` -- Central manifest with agent inventory, delegation mode, platform IDs, and database configuration.
+- `SOUL.md` -- Agent identity, personality, core behaviors, and guardrails.
+- `EXPLAINABILITY.md` -- This document; full transparency and accountability disclosure.
+- `agents/*/agent.yaml` -- Per-agent configuration files with roles, goals, and instructions.
+- `response_schemas/*.json` -- Auto-generated response schemas for each agent.
+
+## 7. Segregation of Duties
+
+### 7.1 Role Definitions
+
+| Role | Agent(s) | Responsibility |
+|---|---|---|
+| Maker | Data Harmonization, Client Intelligence, Workforce Dynamics, Financial Forecasting, Weak Signal Detection | Produce raw analysis, risk scores, projections, and signals |
+| Checker | Executive Orchestrator | Validates, cross-references, and synthesizes maker outputs; resolves conflicts between sub-agent assessments |
+| Executor | Action Simulation | Simulates intervention scenarios; presents options for human approval (no autonomous execution) |
+| Auditor | Intervention Feedback | Independently reviews historical outcomes, recalibrates impact scores, generates accountability reports |
+
+### 7.2 Conflict Matrix
+
+| Role Pair | Held by Same Agent? | Rationale |
+|---|---|---|
+| Maker + Checker | No | Sub-agents produce; Orchestrator validates |
+| Maker + Auditor | No | Intervention Feedback is independent of real-time analysis agents |
+| Checker + Executor | No | Orchestrator synthesizes; Action Simulation handles scenario modeling separately |
+| Checker + Auditor | No | Orchestrator handles real-time synthesis; Intervention Feedback handles post-hoc review independently |
+| Executor + Auditor | No | Action Simulation proposes; Intervention Feedback reviews outcomes after the fact |
+
+### 7.3 Handoff Workflows
+
+Critical actions require multi-agent participation:
+
+1. **Risk Assessment Flow**: Data Harmonization (maker) produces normalized data -> Client Intelligence + Workforce Dynamics + Financial Forecasting (makers) produce domain scores -> Executive Orchestrator (checker) validates and synthesizes -> User reviews unified output.
+2. **Action Recommendation Flow**: Executive Orchestrator (checker) identifies risk -> Action Simulation (executor) generates three scenarios -> User selects action -> Intervention Feedback (auditor) tracks outcome for future recalibration.
+3. **Recalibration Flow**: Intervention Feedback (auditor) independently analyzes historical outcomes -> Publishes recalibrated impact scores -> Executive Orchestrator incorporates updated scores in future assessments.
+
+## 8. Decision Pathway Logging
+
+### 8.1 What Is Logged Per Decision
+
+Every agent invocation captures:
+
+| Data Point | Description |
+|---|---|
+| Timestamp | ISO 8601 timestamp of invocation |
+| Agent ID | Platform ID of the invoked agent |
+| Agent Role | maker, checker, executor, or auditor |
+| Input Summary | Structured summary of the query or data passed to the agent |
+| Output | Full structured JSON response from the agent |
+| Model Version | Model identifier used for the invocation (tracked by Lyzr platform) |
+| Confidence Scores | All confidence values produced in the output |
+| Data Sources | List of data sources referenced in producing the output |
+| Delegation Chain | Which agent delegated to which (for manager-subagent calls) |
+| Latency | Time taken from invocation to response |
+
+### 8.2 Log Storage
+
+- Agent invocation logs are stored in the `action_logs` collection with `owner_user_id` scoping.
+- Risk assessment outputs are stored in `risk_scores` with full input/output records.
+- Pre-risk alerts are stored in `pre_risk_alerts` with detection metadata.
+- Simulation runs are stored in `simulation_runs` with all scenario comparisons.
+- Executive summaries are stored in `executive_summaries` for historical traceability.
+
+### 8.3 Traceability via Git
+
+- All agent configuration changes are tracked via Git (`git diff` for change tracking, `git blame` for attribution).
+- Agent definitions in `agents/*/agent.yaml` provide a version-controlled record of agent behavior over time.
+- Response schemas in `response_schemas/` are version-controlled to track output structure changes.
+
+## 9. Tool Usage Disclosure
 
 Currently, OmniSight agents do not use external tool integrations (e.g., web search, email, calendar). All analysis is performed on data provided through the platform's database and user inputs. If tools are added in the future, they will be disclosed here with their purpose and access scope.
 
-## 7. Data Handling and Privacy
+## 10. Data Handling and Privacy
 
-### 7.1 Database
+### 10.1 Database
 
 - All persistent data is stored in the provisioned MongoDB database: `app_d35edbe23760fcbc1d91f5a0`.
 - Collections: `users`, `risk_scores`, `pre_risk_alerts`, `simulation_runs`, `action_logs`, `alerts`, `executive_summaries`, `feedback_reports`.
 
-### 7.2 Row-Level Security
+### 10.2 Row-Level Security
 
 - User data is scoped per authenticated user via row-level security (RLS).
 - Each record is tagged with `owner_user_id` automatically.
 - Users can only read, update, and delete their own data.
 - No cross-user data access is possible through the application.
 
-### 7.3 Data Retention
+### 10.3 Data Governance and Bias Testing
+
+- **Bias testing**: Enabled. The Intervention Feedback agent continuously evaluates whether historical intervention outcomes show systematic biases in risk scoring across client segments, regions, or teams.
+- **Less Discriminatory Alternative (LDA) search**: When bias is detected in risk scoring patterns, the system flags the affected metrics and recommends recalibration.
+- **Explainable adverse actions**: When a risk score exceeds a threshold or an alert is generated, the output includes `data_sources`, `confidence_pct`, and `trend_direction` so the user can understand exactly what drove the assessment.
+- **Data quality validation**: Data Harmonization agent validates data completeness and flags missing or stale fields before downstream agents process them.
+
+### 10.4 Data Retention
 
 - Data persists in the database until explicitly deleted by the user.
 - No data is exported to external services without explicit user action.
 - Agent processing is stateless -- agents do not retain data between invocations beyond what is stored in the database.
 
-## 8. Human-in-the-Loop Controls
+## 11. Human-in-the-Loop Controls
 
 - **No autonomous execution**: OmniSight provides recommendations and simulations but never executes business decisions without user confirmation.
 - **Simulation-first**: Before any action recommendation, the system presents three scenarios (no-action, recommended, auto-execution) so the user can evaluate trade-offs.
 - **User-initiated analysis**: All risk assessments are triggered by user queries or scheduled reports -- the system does not independently initiate actions.
 - **Override capability**: Users can dismiss alerts, adjust risk scores, or reject recommendations at any point.
 
-## 9. Failure Modes and Fallback Behavior
+## 12. Failure Modes and Fallback Behavior
 
 | Failure Scenario | System Behavior |
 |---|---|
@@ -176,16 +284,16 @@ Currently, OmniSight agents do not use external tool integrations (e.g., web sea
 | Database unavailable | API routes return error responses; UI displays error state; no data loss occurs as writes are transactional |
 | Model API unavailable | Agent calls return error; UI shows retry option; no stale data is presented as fresh |
 
-## 10. Bias and Fairness Considerations
+## 13. Bias and Fairness Considerations
 
 - **Historical bias**: The Intervention Feedback agent recalibrates based on historical outcomes. If past data reflects biased decisions, recalibration may perpetuate those biases. Users should review feedback reports critically.
 - **Data representation**: Risk scores depend on available data. If certain clients, teams, or regions have less data coverage, their risk assessments will have lower confidence -- this is disclosed via the `data_sources` and `confidence_pct` fields.
 - **No demographic profiling**: OmniSight analyzes business metrics (revenue, engagement, workforce allocation) and does not profile individuals based on protected characteristics.
 - **Transparency over certainty**: The system prefers disclosing uncertainty (low confidence) over presenting incomplete analysis as definitive.
 
-## 11. Audit Trail and Accountability
+## 14. Audit Trail and Accountability
 
-### 11.1 What Is Logged
+### 14.1 What Is Logged
 
 - Every risk assessment is stored in the `risk_scores` collection with timestamp, input summary, and confidence metadata.
 - Pre-risk alerts are stored in `pre_risk_alerts` with severity, signal type, and detection time.
@@ -194,13 +302,43 @@ Currently, OmniSight agents do not use external tool integrations (e.g., web sea
 - Executive summaries are stored in `executive_summaries` for historical review.
 - Intervention feedback reports are stored in `feedback_reports` with before/after impact scores.
 
-### 11.2 Traceability
+### 14.2 Traceability
 
 - Each output links back to the data sources used (via `data_sources` arrays in the response schema).
 - Confidence scores provide a measure of how well-supported each conclusion is.
 - The executive summary provides human-readable top-level insights that can be reviewed against the underlying data.
 
-## 12. Limitations and Boundaries
+### 14.3 Retention Policy
+
+- Audit logs are retained for a minimum of 3 years in the database.
+- Historical records are append-only; past assessments are never modified or deleted by the system.
+- Users may request data deletion for their own records per data retention policies.
+
+## 15. Ongoing Monitoring and Drift Detection
+
+### 15.1 Monitoring Framework
+
+| Metric | Monitored By | Frequency | Action on Anomaly |
+|---|---|---|---|
+| Confidence score distribution | Executive Orchestrator | Per invocation | Flag if average confidence drops below 0.5 across assessments |
+| Risk score accuracy | Intervention Feedback | Continuous | Recalibrate impact scores when predicted vs actual outcomes diverge by >20% |
+| Agent response latency | Platform metrics | Continuous | Alert if agent response time exceeds thresholds |
+| Data staleness | Data Harmonization | Per invocation | Flag stale data sources; reduce confidence scores accordingly |
+| Cross-agent agreement rate | Executive Orchestrator | Per invocation | Report conflicts explicitly when sub-agents disagree |
+
+### 15.2 Drift Detection
+
+- The Intervention Feedback agent serves as the primary drift detection mechanism by comparing predicted outcomes against actual results over time.
+- When recalibrated impact scores diverge significantly from initial predictions, the system flags potential model drift.
+- Quarterly validation reviews assess whether agent outputs remain aligned with baseline accuracy metrics.
+
+### 15.3 Outcomes Analysis
+
+- Historical intervention outcomes are continuously analyzed by the Intervention Feedback agent.
+- Success/failure rates of past recommendations are tracked and used to adjust future confidence scores.
+- Trends in risk score accuracy over time are available in `feedback_reports` for review.
+
+## 16. Limitations and Boundaries
 
 - **Data dependency**: Output quality is directly tied to input data quality and completeness. The system discloses when data is insufficient or stale.
 - **Not autonomous**: OmniSight provides intelligence and simulations but does not execute business decisions without explicit user authorization.
@@ -210,11 +348,21 @@ Currently, OmniSight agents do not use external tool integrations (e.g., web sea
 - **Model limitations**: As LLM-based agents, outputs are probabilistic. The structured output schema and confidence scoring mitigate but do not eliminate the possibility of incorrect assessments.
 - **Single-platform dependency**: All agents run on the Lyzr platform. Platform availability directly affects system availability.
 
-## 13. Version and Change Tracking
+## 17. Emergency Controls (Kill Switch)
+
+- **Mechanism**: The Executive Orchestrator agent can be disabled via the Lyzr platform, immediately halting all sub-agent coordination and preventing new risk assessments.
+- **Scope**: Disabling the manager agent stops all delegated sub-agent invocations. Independent agents (Intervention Feedback) can be disabled separately.
+- **Recovery**: Re-enabling the Executive Orchestrator restores normal operation. No data is lost during a kill switch activation; all prior assessments remain in the database.
+- **Authorization**: Kill switch activation requires platform administrator access.
+
+## 18. Version and Change Tracking
 
 - **Spec version**: 0.1.0
 - **Application version**: 1.0.0
 - **Agent definitions**: Stored in `/agents/*/agent.yaml` files with platform IDs for traceability.
 - **Response schemas**: Auto-generated and stored in `/response_schemas/` for each agent.
 - **Workflow state**: Tracked in `workflow_state.json` with all agent IDs and database configuration.
+- **SOUL.md**: Agent identity, personality, and guardrails definition.
+- **EXPLAINABILITY.md**: This document; full transparency and accountability disclosure.
 - Changes to agent behavior (instructions, model, temperature) are managed through the Lyzr platform and reflected in the agent configuration.
+- All configuration changes are version-controlled via Git for full auditability (`git diff` for changes, `git blame` for attribution).
