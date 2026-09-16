@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Bell, AlertTriangle, Clock, CheckCircle, Database, TrendingDown, TrendingUp, Activity } from 'lucide-react'
+import { FiBell, FiAlertTriangle, FiClock, FiCheckCircle, FiDatabase, FiTrendingDown, FiTrendingUp, FiActivity } from 'react-icons/fi'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { ScrollArea } from '@/components/ui/scroll-area'
@@ -26,37 +26,37 @@ const SAMPLE_HIGH_RISK = [
 
 function SeverityColor(severity?: string): string {
   const s = (severity ?? '').toLowerCase()
-  if (s === 'critical') return 'border-destructive/30 bg-destructive/5 border-l-4 border-l-destructive'
-  if (s === 'high') return 'border-destructive/20 bg-destructive/5 border-l-4 border-l-destructive'
-  if (s === 'medium') return 'border-amber-500/20 bg-amber-500/5 border-l-4 border-l-amber-400'
-  return 'border-border bg-card border-l-4 border-l-primary'
+  if (s === 'critical') return 'border-red-500/50 bg-red-500/5'
+  if (s === 'high') return 'border-red-500/30 bg-red-500/5'
+  if (s === 'medium') return 'border-amber-500/30 bg-amber-500/5'
+  return 'border-border'
 }
 
 function TrendIcon({ direction }: { direction?: string }) {
-  if (direction === 'worsening') return <TrendingDown className="w-3.5 h-3.5 text-destructive" />
-  if (direction === 'improving') return <TrendingUp className="w-3.5 h-3.5 text-emerald-500" />
-  return <Activity className="w-3.5 h-3.5 text-muted-foreground" />
+  if (direction === 'worsening') return <FiTrendingDown className="w-3.5 h-3.5 text-red-400" />
+  if (direction === 'improving') return <FiTrendingUp className="w-3.5 h-3.5 text-green-400" />
+  return <FiActivity className="w-3.5 h-3.5 text-muted-foreground" />
 }
 
 function AlertCard({ alert }: { alert: any }) {
   return (
-    <div className={`p-4 border rounded-none ${SeverityColor(alert?.severity)} space-y-3`}>
+    <div className={`p-4 border ${SeverityColor(alert?.severity)} space-y-3`}>
       <div className="flex items-center justify-between">
-        <span className="text-sm font-medium text-card-foreground">{alert?.account_name ?? '--'}</span>
-        <Badge variant={alert?.severity === 'critical' || alert?.severity === 'high' ? 'destructive' : 'secondary'} className="text-xs rounded-none">{alert?.severity ?? '--'}</Badge>
+        <span className="text-sm font-light tracking-wide text-foreground">{alert?.account_name ?? '--'}</span>
+        <Badge variant={alert?.severity === 'critical' || alert?.severity === 'high' ? 'destructive' : 'secondary'} className="text-xs font-light tracking-wider">{alert?.severity ?? '--'}</Badge>
       </div>
-      <p className="text-sm text-muted-foreground leading-relaxed">{alert?.message ?? ''}</p>
+      <p className="text-sm font-light text-muted-foreground leading-relaxed">{alert?.message ?? ''}</p>
       <div className="flex items-center justify-between flex-wrap gap-2">
         <div className="flex items-center gap-2">
-          <Badge variant="outline" className="text-xs border-border rounded-none">{alert?.signal_type ?? '--'}</Badge>
+          <Badge variant="outline" className="text-xs font-light border-border">{alert?.signal_type ?? '--'}</Badge>
           <TrendIcon direction={alert?.trend_direction} />
-          {alert?.rate_of_change != null && <span className="text-xs text-muted-foreground">{alert.rate_of_change}%</span>}
+          {alert?.rate_of_change != null && <span className="text-xs text-muted-foreground font-light">{alert.rate_of_change}%</span>}
         </div>
         <div className="flex items-center gap-2">
           {Array.isArray(alert?.data_sources) && alert.data_sources.map((s: string, j: number) => (
-            <Badge key={j} variant="secondary" className="text-xs rounded-none">{s}</Badge>
+            <Badge key={j} variant="secondary" className="text-xs font-light">{s}</Badge>
           ))}
-          <Badge variant="outline" className="text-xs border-primary/30 text-primary rounded-none">Confidence: {alert?.confidence_pct ?? '--'}%</Badge>
+          <Badge variant="outline" className="text-xs font-light border-primary/30 text-primary">{alert?.confidence_pct ?? '--'}%</Badge>
         </div>
       </div>
     </div>
@@ -76,23 +76,23 @@ export default function AlertsTimeline({ preRiskAlerts, actionPlans, sampleMode 
     <ScrollArea className="h-full">
       <div className="p-6 space-y-6">
         <div>
-          <h2 className="text-2xl font-serif tracking-wider font-light text-foreground">Alerts & Timeline</h2>
-          <p className="text-sm text-muted-foreground mt-1">Risk signal monitoring and evolution tracking</p>
+          <h2 className="text-2xl font-light tracking-widest text-foreground uppercase">Alerts & Timeline</h2>
+          <p className="text-sm text-muted-foreground font-light tracking-wide mt-1">Risk signal monitoring and evolution tracking</p>
         </div>
 
         <Tabs value={tab} onValueChange={setTab}>
-          <TabsList className="bg-secondary border border-border rounded-none">
-            <TabsTrigger value="pre-risk" className="text-xs data-[state=active]:bg-card rounded-none">Pre-Risk Alerts</TabsTrigger>
-            <TabsTrigger value="high-risk" className="text-xs data-[state=active]:bg-card rounded-none">High-Risk Alerts</TabsTrigger>
-            <TabsTrigger value="timeline" className="text-xs data-[state=active]:bg-card rounded-none">Timeline View</TabsTrigger>
+          <TabsList className="bg-muted/30 border border-border">
+            <TabsTrigger value="pre-risk" className="text-xs tracking-wider font-light data-[state=active]:bg-card">Pre-Risk Alerts</TabsTrigger>
+            <TabsTrigger value="high-risk" className="text-xs tracking-wider font-light data-[state=active]:bg-card">High-Risk Alerts</TabsTrigger>
+            <TabsTrigger value="timeline" className="text-xs tracking-wider font-light data-[state=active]:bg-card">Timeline View</TabsTrigger>
           </TabsList>
 
           <TabsContent value="pre-risk" className="mt-4 space-y-3">
             {preRisk.length === 0 ? (
-              <Card className="border-border rounded-none bg-card">
+              <Card className="border-border">
                 <CardContent className="py-12 text-center">
-                  <Bell className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
-                  <p className="text-sm text-muted-foreground">No pre-risk alerts detected</p>
+                  <FiBell className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
+                  <p className="text-sm text-muted-foreground font-light tracking-wide">No pre-risk alerts detected</p>
                 </CardContent>
               </Card>
             ) : (
@@ -102,10 +102,10 @@ export default function AlertsTimeline({ preRiskAlerts, actionPlans, sampleMode 
 
           <TabsContent value="high-risk" className="mt-4 space-y-3">
             {highRisk.length === 0 ? (
-              <Card className="border-border rounded-none bg-card">
+              <Card className="border-border">
                 <CardContent className="py-12 text-center">
-                  <AlertTriangle className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
-                  <p className="text-sm text-muted-foreground">No high-risk alerts</p>
+                  <FiAlertTriangle className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
+                  <p className="text-sm text-muted-foreground font-light tracking-wide">No high-risk alerts</p>
                 </CardContent>
               </Card>
             ) : (
@@ -115,30 +115,30 @@ export default function AlertsTimeline({ preRiskAlerts, actionPlans, sampleMode 
 
           <TabsContent value="timeline" className="mt-4">
             {allAlerts.length === 0 ? (
-              <Card className="border-border rounded-none bg-card">
+              <Card className="border-border">
                 <CardContent className="py-12 text-center">
-                  <Clock className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
-                  <p className="text-sm text-muted-foreground">No timeline data available</p>
+                  <FiClock className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
+                  <p className="text-sm text-muted-foreground font-light tracking-wide">No timeline data available</p>
                 </CardContent>
               </Card>
             ) : (
               <div className="relative pl-8">
-                <div className="absolute left-3 top-0 bottom-0 w-px bg-primary/30" />
+                <div className="absolute left-3 top-0 bottom-0 w-px bg-border" />
                 {allAlerts.map((alert, i) => (
                   <div key={i} className="relative mb-6">
-                    <div className={`absolute left-[-22px] w-3 h-3 rounded-full ${(alert?.severity ?? '').toLowerCase() === 'critical' || (alert?.severity ?? '').toLowerCase() === 'high' ? 'bg-destructive' : 'bg-primary'}`} style={{ top: '6px' }} />
-                    <Card className="border-border rounded-none shadow-sm bg-card">
+                    <div className={`absolute left-[-22px] w-3 h-3 ${(alert?.severity ?? '').toLowerCase() === 'critical' || (alert?.severity ?? '').toLowerCase() === 'high' ? 'bg-red-400' : 'bg-primary'}`} style={{ borderRadius: '50%', top: '6px' }} />
+                    <Card className="border-border">
                       <CardContent className="py-3 px-4">
                         <div className="flex items-center justify-between mb-1">
-                          <span className="text-sm font-medium text-card-foreground">{alert?.account_name ?? '--'}</span>
+                          <span className="text-sm font-light tracking-wide text-foreground">{alert?.account_name ?? '--'}</span>
                           <div className="flex items-center gap-2">
-                            <Badge variant={alert?.severity === 'critical' || alert?.severity === 'high' ? 'destructive' : 'secondary'} className="text-xs rounded-none">{alert?.severity ?? '--'}</Badge>
-                            <Badge variant="outline" className="text-xs border-primary/30 text-primary rounded-none">{alert?.confidence_pct ?? '--'}%</Badge>
+                            <Badge variant={alert?.severity === 'critical' || alert?.severity === 'high' ? 'destructive' : 'secondary'} className="text-xs font-light tracking-wider">{alert?.severity ?? '--'}</Badge>
+                            <Badge variant="outline" className="text-xs font-light border-primary/30 text-primary">{alert?.confidence_pct ?? '--'}%</Badge>
                           </div>
                         </div>
-                        <p className="text-xs text-muted-foreground">{alert?.message ?? ''}</p>
+                        <p className="text-xs text-muted-foreground font-light">{alert?.message ?? ''}</p>
                         <div className="flex items-center gap-2 mt-2">
-                          <Badge variant="outline" className="text-xs border-border rounded-none">{alert?.signal_type ?? '--'}</Badge>
+                          <Badge variant="outline" className="text-xs font-light border-border">{alert?.signal_type ?? '--'}</Badge>
                           <TrendIcon direction={alert?.trend_direction} />
                         </div>
                       </CardContent>

@@ -17,21 +17,21 @@ const FEEDBACK_ID = '69ec55af25ead3c1187be94f'
 
 const THEME_VARS = {
   '--background': '30 8% 6%',
-  '--foreground': '30 8% 90%',
-  '--card': '30 6% 10%',
-  '--card-foreground': '30 8% 85%',
+  '--foreground': '30 10% 90%',
+  '--card': '30 6% 9%',
+  '--card-foreground': '30 10% 90%',
   '--primary': '40 50% 55%',
   '--primary-foreground': '30 8% 6%',
-  '--secondary': '30 6% 14%',
-  '--secondary-foreground': '30 8% 75%',
-  '--muted': '30 4% 16%',
+  '--secondary': '30 5% 15%',
+  '--secondary-foreground': '30 10% 90%',
+  '--muted': '30 5% 18%',
   '--muted-foreground': '30 8% 55%',
   '--accent': '40 50% 55%',
   '--accent-foreground': '30 8% 6%',
-  '--destructive': '0 72% 51%',
-  '--destructive-foreground': '0 0% 100%',
-  '--border': '30 4% 18%',
-  '--input': '30 4% 18%',
+  '--destructive': '0 50% 50%',
+  '--destructive-foreground': '30 10% 90%',
+  '--border': '30 6% 20%',
+  '--input': '30 6% 20%',
   '--ring': '40 50% 55%',
   '--radius': '0rem',
 } as React.CSSProperties
@@ -72,33 +72,33 @@ function safeParseResult(result: any): any {
 }
 
 const AUTH_THEME = {
-  '--background': '30 8% 6%',
-  '--foreground': '30 8% 90%',
-  '--card': '30 6% 10%',
-  '--card-foreground': '30 8% 85%',
-  '--primary': '40 50% 55%',
-  '--primary-foreground': '30 8% 6%',
-  '--secondary': '30 6% 14%',
-  '--secondary-foreground': '30 8% 75%',
-  '--muted': '30 4% 16%',
-  '--muted-foreground': '30 8% 55%',
-  '--accent': '40 50% 55%',
-  '--accent-foreground': '30 8% 6%',
-  '--destructive': '0 72% 51%',
+  '--background': '30 20% 96%',
+  '--foreground': '30 10% 12%',
+  '--card': '0 0% 100%',
+  '--card-foreground': '30 10% 12%',
+  '--primary': '40 50% 45%',
+  '--primary-foreground': '0 0% 100%',
+  '--secondary': '30 10% 90%',
+  '--secondary-foreground': '30 10% 12%',
+  '--muted': '30 10% 92%',
+  '--muted-foreground': '30 8% 45%',
+  '--accent': '40 50% 45%',
+  '--accent-foreground': '0 0% 100%',
+  '--destructive': '0 50% 50%',
   '--destructive-foreground': '0 0% 100%',
-  '--border': '30 4% 18%',
-  '--input': '30 4% 18%',
-  '--ring': '40 50% 55%',
-  '--radius': '0rem',
+  '--border': '30 10% 82%',
+  '--input': '30 10% 82%',
+  '--ring': '40 50% 45%',
+  '--radius': '0.375rem',
 } as React.CSSProperties
 
 function AuthScreen() {
   const [mode, setMode] = useState<'login' | 'register'>('register')
   return (
-    <div style={AUTH_THEME} className="min-h-screen bg-background flex items-center justify-center font-sans">
-      <div className="w-full max-w-md p-10 border border-border bg-card rounded-none shadow-sm">
-        <h1 className="text-2xl font-serif tracking-wider font-light text-foreground text-center mb-1">Omnisight</h1>
-        <p className="text-sm text-muted-foreground text-center mb-8">Enterprise Intelligence Platform</p>
+    <div style={AUTH_THEME} className="min-h-screen bg-background flex items-center justify-center font-serif">
+      <div className="w-full max-w-md p-10 border border-border bg-card rounded-lg shadow-lg">
+        <h1 className="text-2xl font-light tracking-widest text-foreground uppercase text-center mb-1">Omnisight</h1>
+        <p className="text-xs text-muted-foreground tracking-wider text-center mb-8">Enterprise Intelligence Platform</p>
         {mode === 'login' ? (
           <LoginForm onSwitchToRegister={() => setMode('register')} />
         ) : (
@@ -266,7 +266,7 @@ function AppContent() {
   }, [])
 
   return (
-    <div style={THEME_VARS} className="min-h-screen bg-background text-foreground font-sans flex">
+    <div style={THEME_VARS} className="min-h-screen bg-background text-foreground font-serif flex">
       <Sidebar activeScreen={activeScreen} onNavigate={setActiveScreen} onLogout={handleLogout} />
       <main className="flex-1 h-screen overflow-hidden">
         {activeScreen === 'risk-overview' && (
