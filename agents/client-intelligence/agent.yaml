@@ -1,0 +1,4 @@
+name: client-intelligence
+description: Analyzes client data to assess churn risk, account health, and engagement patterns.
+role: worker
+platform_id: "69ec5579683f81d0be89f2d8"

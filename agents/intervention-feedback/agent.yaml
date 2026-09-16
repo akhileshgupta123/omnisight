@@ -1,0 +1,7 @@
+name: intervention-feedback
+description: >
+  Analyzes historical action logs and outcomes. Evaluates intervention
+  success/failure, recalibrates action impact scores and confidence levels,
+  generates feedback reports.
+role: worker
+platform_id: "69ec55af25ead3c1187be94f"

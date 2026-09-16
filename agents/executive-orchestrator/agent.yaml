@@ -1,0 +1,8 @@
+name: executive-orchestrator
+description: >
+  Coordinates all sub-agents, synthesizes outputs into unified intelligence --
+  risk scores with confidence/data-coverage metadata, pre-risk alerts,
+  risk trajectories, preventive/reactive actions, three-way simulation
+  comparisons, and root-cause explanations.
+role: manager
+platform_id: "69ec559edcdea9592ddcd911"

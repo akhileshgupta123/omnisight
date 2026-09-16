@@ -1,0 +1,4 @@
+name: data-harmonization
+description: Harmonizes and normalizes data from multiple sources for downstream agents.
+role: worker
+platform_id: "69ec55796ff27f88a5adb8ba"

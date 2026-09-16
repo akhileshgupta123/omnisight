@@ -1,0 +1,4 @@
+name: financial-forecasting
+description: Generates best/expected/worst-case revenue projections with confidence intervals.
+role: worker
+platform_id: "69ec557a25ead3c1187be946"

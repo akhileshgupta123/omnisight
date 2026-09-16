@@ -1,0 +1,4 @@
+name: weak-signal
+description: Detects early-warning pre-risk signals across accounts before they escalate.
+role: worker
+platform_id: "69ec557ae78e19fa5bc64d5c"

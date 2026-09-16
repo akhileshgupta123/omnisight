@@ -1,0 +1,4 @@
+name: action-simulation
+description: Simulates no-action, recommended, and auto-execution scenarios to compare outcomes.
+role: worker
+platform_id: "69ec557b0263199051be3424"
