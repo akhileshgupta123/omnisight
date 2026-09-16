@@ -1,0 +1,12 @@
+OmniSight - Enterprise Risk Intelligence Platform
+Completed: 2026-09-16
+
+Agents:
+- Manager: Executive Orchestrator (69ec559edcdea9592ddcd911)
+- Sub-agents: Data Harmonization, Client Intelligence, Workforce Dynamics, Financial Forecasting, Weak Signal, Action Simulation
+- Independent: Intervention Feedback (69ec55af25ead3c1187be94f)
+
+Database: app_d35edbe23760fcbc1d91f5a0
+Collections: users, risk_scores, pre_risk_alerts, simulation_runs, action_logs, alerts, executive_summaries, feedback_reports
+
+UI Sections: RiskOverview, AccountDrilldown, AlertsTimeline, ExecutiveSummary, FeedbackLearning, SimulationPanel, Sidebar
