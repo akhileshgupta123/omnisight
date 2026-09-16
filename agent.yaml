@@ -1,112 +1,51 @@
-version: "1.0"
+spec_version: "0.1.0"
 name: omnisight
+version: 1.0.0
 description: >
   OmniSight is an enterprise risk intelligence platform that orchestrates
   multiple AI agents to deliver unified risk scoring, pre-risk alerts,
   financial forecasting, action simulation, and intervention feedback analysis.
 
 agents:
-  manager:
-    name: Executive Orchestrator Agent
-    id: 69ec559edcdea9592ddcd911
-    role: manager
+  executive-orchestrator:
     description: >
       Coordinates all sub-agents, synthesizes outputs into unified intelligence --
       risk scores with confidence/data-coverage metadata, pre-risk alerts,
       risk trajectories, preventive/reactive actions, three-way simulation
       comparisons, and root-cause explanations.
-    managed_agents:
-      - data_harmonization
-      - client_intelligence
-      - workforce_dynamics
-      - financial_forecasting
-      - weak_signal
-      - action_simulation
+  data-harmonization:
+    description: Harmonizes and normalizes data from multiple sources for downstream agents.
+  client-intelligence:
+    description: Analyzes client data to assess churn risk, account health, and engagement patterns.
+  workforce-dynamics:
+    description: Evaluates workforce stability, resource allocation, and team dynamics.
+  financial-forecasting:
+    description: Generates best/expected/worst-case revenue projections with confidence intervals.
+  weak-signal:
+    description: Detects early-warning pre-risk signals across accounts before they escalate.
+  action-simulation:
+    description: Simulates no-action, recommended, and auto-execution scenarios to compare outcomes.
+  intervention-feedback:
+    description: >
+      Analyzes historical action logs and outcomes. Evaluates intervention
+      success/failure, recalibrates action impact scores and confidence levels,
+      generates feedback reports.
 
-  sub_agents:
-    data_harmonization:
-      name: Data Harmonization Agent
-      id: 69ec55796ff27f88a5adb8ba
-      description: Harmonizes and normalizes data from multiple sources for downstream agents.
+delegation:
+  mode: router
+  router: executive-orchestrator
 
-    client_intelligence:
-      name: Client Intelligence Agent
-      id: 69ec5579683f81d0be89f2d8
-      description: Analyzes client data to assess churn risk, account health, and engagement patterns.
-
-    workforce_dynamics:
-      name: Workforce Dynamics Agent
-      id: 69ec557adcdea9592ddcd90b
-      description: Evaluates workforce stability, resource allocation, and team dynamics.
-
-    financial_forecasting:
-      name: Financial Forecasting Agent
-      id: 69ec557a25ead3c1187be946
-      description: Generates best/expected/worst-case revenue projections with confidence intervals.
-
-    weak_signal:
-      name: Weak Signal Agent
-      id: 69ec557ae78e19fa5bc64d5c
-      description: Detects early-warning pre-risk signals across accounts before they escalate.
-
-    action_simulation:
-      name: Action Simulation Agent
-      id: 69ec557b0263199051be3424
-      description: Simulates no-action, recommended, and auto-execution scenarios to compare outcomes.
-
-  independent:
-    intervention_feedback:
-      name: Intervention Feedback Agent
-      id: 69ec55af25ead3c1187be94f
-      description: >
-        Analyzes historical action logs and outcomes. Evaluates intervention
-        success/failure, recalibrates action impact scores and confidence levels,
-        generates feedback reports.
-
-database:
-  provisioned: true
-  name: app_d35edbe23760fcbc1d91f5a0
-  collections:
-    - users
-    - risk_scores
-    - pre_risk_alerts
-    - simulation_runs
-    - action_logs
-    - alerts
-    - executive_summaries
-    - feedback_reports
-
-models:
-  - actionLog
-  - alert
-  - executiveSummary
-  - feedbackReport
-  - preRiskAlert
-  - riskScore
-  - simulationRun
-
-response_schemas:
-  executive_orchestrator:
-    file: response_schemas/executive_orchestrator_agent_response.json
-    type: json
-    accessor: result
-    outputs:
-      - dashboard_metrics
-      - at_risk_accounts
-      - pre_risk_alerts
-      - financial_forecast
-      - action_plans
-      - simulation_comparison
-      - executive_summary
-
-  intervention_feedback:
-    file: response_schemas/intervention_feedback_agent_response.json
-    type: json
-    accessor: result
-    outputs:
-      - overall_success_rate
-      - total_interventions_analyzed
-      - average_risk_reduction
-      - intervention_analysis
-      - adjusted_impact_scores
-      - recommendations
+metadata:
+  platform: lyzr
+  manager_agent_id: "69ec559edcdea9592ddcd911"
+  agent_ids:
+    executive_orchestrator: "69ec559edcdea9592ddcd911"
+    data_harmonization: "69ec55796ff27f88a5adb8ba"
+    client_intelligence: "69ec5579683f81d0be89f2d8"
+    workforce_dynamics: "69ec557adcdea9592ddcd90b"
+    financial_forecasting: "69ec557a25ead3c1187be946"
+    weak_signal: "69ec557ae78e19fa5bc64d5c"
+    action_simulation: "69ec557b0263199051be3424"
+    intervention_feedback: "69ec55af25ead3c1187be94f"
+  database_name: "app_d35edbe23760fcbc1d91f5a0"
+  database_provisioned: true
