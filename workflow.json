@@ -1,0 +1,32 @@
+{
+  "nodes": [
+    {"id": "input_node", "type": "Input", "label": "User Query", "nodeCategory": "input"},
+    {"id": "executive_orchestrator", "type": "Agent", "label": "Executive Orchestrator", "nodeCategory": "agent"},
+    {"id": "data_harmonization", "type": "Agent", "label": "Data Harmonization", "nodeCategory": "agent"},
+    {"id": "client_intelligence", "type": "Agent", "label": "Client Intelligence", "nodeCategory": "agent"},
+    {"id": "workforce_dynamics", "type": "Agent", "label": "Workforce Dynamics", "nodeCategory": "agent"},
+    {"id": "financial_forecasting", "type": "Agent", "label": "Financial Forecasting", "nodeCategory": "agent"},
+    {"id": "weak_signal", "type": "Agent", "label": "Weak Signal Detection", "nodeCategory": "agent"},
+    {"id": "action_simulation", "type": "Agent", "label": "Action Simulation", "nodeCategory": "agent"},
+    {"id": "intervention_feedback", "type": "Agent", "label": "Intervention Feedback", "nodeCategory": "agent"},
+    {"id": "output_node", "type": "Output", "label": "Intelligence Report", "nodeCategory": "end"}
+  ],
+  "edges": [
+    {"source": "input_node", "target": "executive_orchestrator"},
+    {"source": "executive_orchestrator", "target": "data_harmonization"},
+    {"source": "executive_orchestrator", "target": "client_intelligence"},
+    {"source": "executive_orchestrator", "target": "workforce_dynamics"},
+    {"source": "executive_orchestrator", "target": "financial_forecasting"},
+    {"source": "executive_orchestrator", "target": "weak_signal"},
+    {"source": "executive_orchestrator", "target": "action_simulation"},
+    {"source": "data_harmonization", "target": "executive_orchestrator"},
+    {"source": "client_intelligence", "target": "executive_orchestrator"},
+    {"source": "workforce_dynamics", "target": "executive_orchestrator"},
+    {"source": "financial_forecasting", "target": "executive_orchestrator"},
+    {"source": "weak_signal", "target": "executive_orchestrator"},
+    {"source": "action_simulation", "target": "executive_orchestrator"},
+    {"source": "executive_orchestrator", "target": "output_node"},
+    {"source": "input_node", "target": "intervention_feedback"},
+    {"source": "intervention_feedback", "target": "output_node"}
+  ]
+}

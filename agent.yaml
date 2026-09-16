@@ -1,3 +1,4 @@
+version: "1.0"
 name: omnisight
 description: >
   OmniSight is an enterprise risk intelligence platform that orchestrates
