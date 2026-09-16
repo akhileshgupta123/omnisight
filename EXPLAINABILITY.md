@@ -236,45 +236,86 @@ Every agent invocation captures:
 - Agent definitions in `agents/*/agent.yaml` provide a version-controlled record of agent behavior over time.
 - Response schemas in `response_schemas/` are version-controlled to track output structure changes.
 
-## 9. Tool Usage Disclosure
+## 9. Evidence — Source Documents Are Recorded
+
+### 9.1 Source Document Recording Policy
+
+Every agent output in OmniSight records the source documents and data inputs that contributed to its conclusions. This ensures that any risk score, alert, projection, or recommendation can be traced back to the specific evidence that produced it.
+
+| Evidence Requirement | Implementation | Verification |
+|---|---|---|
+| Source documents are recorded | Every agent output includes a `data_sources` array listing all documents, datasets, and data feeds referenced | Stored in database collections alongside outputs |
+| Input-to-output traceability | Each response schema field maps to identified source data via `data_sources` references | Queryable via `risk_scores`, `pre_risk_alerts`, `simulation_runs` collections |
+| Evidence attribution per claim | Risk scores, alerts, and projections each carry their own `data_sources` list specific to that assessment | Enforced by agent instructions (source-attributing prompt principle) |
+| Evidence preservation | Source document references are stored as part of the immutable audit record in the database | Append-only collections prevent retroactive modification |
+| Evidence completeness flagging | When source data is incomplete or missing, agents flag the gap and reduce confidence scores rather than proceeding without evidence | Visible via `confidence_pct` < 0.5 and data-limited warnings |
+
+### 9.2 How Source Documents Are Captured
+
+1. **At ingestion**: The Data Harmonization agent records which raw data sources (uploaded files, data feeds, CRM exports, HR system exports, financial records) were processed and normalized.
+2. **At analysis**: Each downstream agent (Client Intelligence, Workforce Dynamics, Financial Forecasting, Weak Signal Detection) logs which normalized datasets and upstream agent outputs it consumed in its `data_sources` output field.
+3. **At synthesis**: The Executive Orchestrator records the complete set of sub-agent outputs that contributed to the unified risk intelligence response, preserving the full chain of evidence.
+4. **At simulation**: The Action Simulation agent records the current risk state and historical action data used as inputs for its three-scenario comparison.
+5. **At audit**: The Intervention Feedback agent records which `action_logs` and historical outcome records it analyzed to produce recalibrated impact scores.
+
+### 9.3 Evidence Storage Locations
+
+| Evidence Type | Storage Collection | Key Fields |
+|---|---|---|
+| Raw data source references | `risk_scores`, `pre_risk_alerts` | `data_sources` array |
+| Agent input summaries | `action_logs` | `input_summary`, `agent_id`, `timestamp` |
+| Sub-agent delegation chain | `action_logs` | `delegation_chain` |
+| Simulation input state | `simulation_runs` | Input risk context, historical action data |
+| Recalibration evidence | `feedback_reports` | Before/after impact scores, source `action_logs` referenced |
+| Executive synthesis evidence | `executive_summaries` | Aggregated `data_sources` from all contributing sub-agents |
+
+### 9.4 Evidence Retrieval
+
+Any assessment can be audited by:
+1. Querying the relevant collection (e.g., `risk_scores`) by timestamp and `owner_user_id`.
+2. Inspecting the `data_sources` array to identify which source documents contributed.
+3. Following the `delegation_chain` in `action_logs` to trace which agents participated.
+4. Reviewing the input summaries to see exactly what data each agent received.
+
+## 10. Tool Usage Disclosure
 
 Currently, OmniSight agents do not use external tool integrations (e.g., web search, email, calendar). All analysis is performed on data provided through the platform's database and user inputs. If tools are added in the future, they will be disclosed here with their purpose and access scope.
 
-## 10. Data Handling and Privacy
+## 11. Data Handling and Privacy
 
-### 10.1 Database
+### 11.1 Database
 
 - All persistent data is stored in the provisioned MongoDB database: `app_d35edbe23760fcbc1d91f5a0`.
 - Collections: `users`, `risk_scores`, `pre_risk_alerts`, `simulation_runs`, `action_logs`, `alerts`, `executive_summaries`, `feedback_reports`.
 
-### 10.2 Row-Level Security
+### 11.2 Row-Level Security
 
 - User data is scoped per authenticated user via row-level security (RLS).
 - Each record is tagged with `owner_user_id` automatically.
 - Users can only read, update, and delete their own data.
 - No cross-user data access is possible through the application.
 
-### 10.3 Data Governance and Bias Testing
+### 11.3 Data Governance and Bias Testing
 
 - **Bias testing**: Enabled. The Intervention Feedback agent continuously evaluates whether historical intervention outcomes show systematic biases in risk scoring across client segments, regions, or teams.
 - **Less Discriminatory Alternative (LDA) search**: When bias is detected in risk scoring patterns, the system flags the affected metrics and recommends recalibration.
 - **Explainable adverse actions**: When a risk score exceeds a threshold or an alert is generated, the output includes `data_sources`, `confidence_pct`, and `trend_direction` so the user can understand exactly what drove the assessment.
 - **Data quality validation**: Data Harmonization agent validates data completeness and flags missing or stale fields before downstream agents process them.
 
-### 10.4 Data Retention
+### 11.4 Data Retention
 
 - Data persists in the database until explicitly deleted by the user.
 - No data is exported to external services without explicit user action.
 - Agent processing is stateless -- agents do not retain data between invocations beyond what is stored in the database.
 
-## 11. Human-in-the-Loop Controls
+## 12. Human-in-the-Loop Controls
 
 - **No autonomous execution**: OmniSight provides recommendations and simulations but never executes business decisions without user confirmation.
 - **Simulation-first**: Before any action recommendation, the system presents three scenarios (no-action, recommended, auto-execution) so the user can evaluate trade-offs.
 - **User-initiated analysis**: All risk assessments are triggered by user queries or scheduled reports -- the system does not independently initiate actions.
 - **Override capability**: Users can dismiss alerts, adjust risk scores, or reject recommendations at any point.
 
-## 12. Failure Modes and Fallback Behavior
+## 13. Failure Modes and Fallback Behavior
 
 | Failure Scenario | System Behavior |
 |---|---|
@@ -284,16 +325,16 @@ Currently, OmniSight agents do not use external tool integrations (e.g., web sea
 | Database unavailable | API routes return error responses; UI displays error state; no data loss occurs as writes are transactional |
 | Model API unavailable | Agent calls return error; UI shows retry option; no stale data is presented as fresh |
 
-## 13. Bias and Fairness Considerations
+## 14. Bias and Fairness Considerations
 
 - **Historical bias**: The Intervention Feedback agent recalibrates based on historical outcomes. If past data reflects biased decisions, recalibration may perpetuate those biases. Users should review feedback reports critically.
 - **Data representation**: Risk scores depend on available data. If certain clients, teams, or regions have less data coverage, their risk assessments will have lower confidence -- this is disclosed via the `data_sources` and `confidence_pct` fields.
 - **No demographic profiling**: OmniSight analyzes business metrics (revenue, engagement, workforce allocation) and does not profile individuals based on protected characteristics.
 - **Transparency over certainty**: The system prefers disclosing uncertainty (low confidence) over presenting incomplete analysis as definitive.
 
-## 14. Audit Trail and Accountability
+## 15. Audit Trail and Accountability
 
-### 14.1 What Is Logged
+### 15.1 What Is Logged
 
 - Every risk assessment is stored in the `risk_scores` collection with timestamp, input summary, and confidence metadata.
 - Pre-risk alerts are stored in `pre_risk_alerts` with severity, signal type, and detection time.
@@ -302,21 +343,21 @@ Currently, OmniSight agents do not use external tool integrations (e.g., web sea
 - Executive summaries are stored in `executive_summaries` for historical review.
 - Intervention feedback reports are stored in `feedback_reports` with before/after impact scores.
 
-### 14.2 Traceability
+### 15.2 Traceability
 
 - Each output links back to the data sources used (via `data_sources` arrays in the response schema).
 - Confidence scores provide a measure of how well-supported each conclusion is.
 - The executive summary provides human-readable top-level insights that can be reviewed against the underlying data.
 
-### 14.3 Retention Policy
+### 15.3 Retention Policy
 
 - Audit logs are retained for a minimum of 3 years in the database.
 - Historical records are append-only; past assessments are never modified or deleted by the system.
 - Users may request data deletion for their own records per data retention policies.
 
-## 15. Ongoing Monitoring and Drift Detection
+## 16. Ongoing Monitoring and Drift Detection
 
-### 15.1 Monitoring Framework
+### 16.1 Monitoring Framework
 
 | Metric | Monitored By | Frequency | Action on Anomaly |
 |---|---|---|---|
@@ -326,19 +367,19 @@ Currently, OmniSight agents do not use external tool integrations (e.g., web sea
 | Data staleness | Data Harmonization | Per invocation | Flag stale data sources; reduce confidence scores accordingly |
 | Cross-agent agreement rate | Executive Orchestrator | Per invocation | Report conflicts explicitly when sub-agents disagree |
 
-### 15.2 Drift Detection
+### 16.2 Drift Detection
 
 - The Intervention Feedback agent serves as the primary drift detection mechanism by comparing predicted outcomes against actual results over time.
 - When recalibrated impact scores diverge significantly from initial predictions, the system flags potential model drift.
 - Quarterly validation reviews assess whether agent outputs remain aligned with baseline accuracy metrics.
 
-### 15.3 Outcomes Analysis
+### 16.3 Outcomes Analysis
 
 - Historical intervention outcomes are continuously analyzed by the Intervention Feedback agent.
 - Success/failure rates of past recommendations are tracked and used to adjust future confidence scores.
 - Trends in risk score accuracy over time are available in `feedback_reports` for review.
 
-## 16. Limitations and Boundaries
+## 17. Limitations and Boundaries
 
 - **Data dependency**: Output quality is directly tied to input data quality and completeness. The system discloses when data is insufficient or stale.
 - **Not autonomous**: OmniSight provides intelligence and simulations but does not execute business decisions without explicit user authorization.
@@ -348,14 +389,14 @@ Currently, OmniSight agents do not use external tool integrations (e.g., web sea
 - **Model limitations**: As LLM-based agents, outputs are probabilistic. The structured output schema and confidence scoring mitigate but do not eliminate the possibility of incorrect assessments.
 - **Single-platform dependency**: All agents run on the Lyzr platform. Platform availability directly affects system availability.
 
-## 17. Emergency Controls (Kill Switch)
+## 18. Emergency Controls (Kill Switch)
 
 - **Mechanism**: The Executive Orchestrator agent can be disabled via the Lyzr platform, immediately halting all sub-agent coordination and preventing new risk assessments.
 - **Scope**: Disabling the manager agent stops all delegated sub-agent invocations. Independent agents (Intervention Feedback) can be disabled separately.
 - **Recovery**: Re-enabling the Executive Orchestrator restores normal operation. No data is lost during a kill switch activation; all prior assessments remain in the database.
 - **Authorization**: Kill switch activation requires platform administrator access.
 
-## 18. Version and Change Tracking
+## 19. Version and Change Tracking
 
 - **Spec version**: 0.1.0
 - **Application version**: 1.0.0
