@@ -38,14 +38,6 @@ delegation:
 metadata:
   platform: lyzr
   manager_agent_id: "69ec559edcdea9592ddcd911"
-  agent_ids:
-    executive_orchestrator: "69ec559edcdea9592ddcd911"
-    data_harmonization: "69ec55796ff27f88a5adb8ba"
-    client_intelligence: "69ec5579683f81d0be89f2d8"
-    workforce_dynamics: "69ec557adcdea9592ddcd90b"
-    financial_forecasting: "69ec557a25ead3c1187be946"
-    weak_signal: "69ec557ae78e19fa5bc64d5c"
-    action_simulation: "69ec557b0263199051be3424"
-    intervention_feedback: "69ec55af25ead3c1187be94f"
+  agent_ids: '{"executive_orchestrator":"69ec559edcdea9592ddcd911","data_harmonization":"69ec55796ff27f88a5adb8ba","client_intelligence":"69ec5579683f81d0be89f2d8","workforce_dynamics":"69ec557adcdea9592ddcd90b","financial_forecasting":"69ec557a25ead3c1187be946","weak_signal":"69ec557ae78e19fa5bc64d5c","action_simulation":"69ec557b0263199051be3424","intervention_feedback":"69ec55af25ead3c1187be94f"}'
   database_name: "app_d35edbe23760fcbc1d91f5a0"
   database_provisioned: true
